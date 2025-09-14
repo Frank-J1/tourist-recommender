@@ -1,12 +1,20 @@
-# app.py
+import difflib
+
+ALIASES = {
+    "us": "united states",
+    "usa": "united states",
+    "u.s.": "united states",
+    "u.s.a": "united states",
+    "america": "united states",
+}
 from data import DESTINATIONS   # import our dictionary from data.py
 
 def normalize(s: str) -> str:
-    # takes whatever the user typed and makes it lowercase, no spaces
-    return s.strip().lower()
+    # trim, lowercase, collapse inner whitespace
+    return " ".join(s.strip().lower().split())
 
 def supported():
-    # returns a comma-separated list of all supported countries
+    # returns a list of all supported countries
     return [k.title() for k in sorted(DESTINATIONS.keys())]
 
 def show_country(key: str):
@@ -15,6 +23,20 @@ def show_country(key: str):
     for spot in DESTINATIONS[key]:
         print(f"- {spot['name']}: {spot['blurb']}")
     print()  # blank line for spacing
+
+def find_best_country(key: str):
+    if key in DESTINATIONS:
+        return ("exact", key)
+    
+    if key in ALIASES:
+        return ("alias", ALIASES[key])
+    
+    partial_hits = [k for k in DESTINATIONS.keys() if key and key in k]
+    if partial_hits:
+        return ("partial", partial_hits[0])
+    
+
+
 
 def main():
     print("Welcome to TripTaster!")
