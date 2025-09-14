@@ -35,7 +35,12 @@ def find_best_country(key: str):
     if partial_hits:
         return ("partial", partial_hits[0])
     
+    fuzzy = difflib.get_close_matches(key, DESTINATIONS.keys(), n = 1, cutoff = 0.6)
 
+    if fuzzy:
+        return ("fuzzy", fuzzy[0])
+    
+    return ("none", None)
 
 
 def main():
@@ -54,6 +59,19 @@ def main():
             for country in supported():
                 print(f"- {country}")
             continue
+        else:
+            status, target = find_best_country(key)
+            if status in ("exact", "alias", "partial"):
+                show_country(target)
+                continue
+
+            elif status == "fuzzy":
+                print(f"No exact match for {raw}. Did you mean {target.title()} ?")
+                continue
+            
+            else:
+                print(f"No match for {raw}. Type list to see the supported countries")
+                
         if key in DESTINATIONS:       # if we know this country
             show_country(key)
         else:                         # otherwise, no match
