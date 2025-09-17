@@ -32,8 +32,13 @@ def find_best_country(key: str):
         return ("alias", ALIASES[key])
     
     partial_hits = [k for k in DESTINATIONS.keys() if key and key in k]
+
     if partial_hits:
-        return ("partial", partial_hits[0])
+        if len(partial_hits) == 1:
+            return("partial", partial_hits[0])
+    
+        else:
+            return ("partial_many", partial_hits)
     
     fuzzy = difflib.get_close_matches(key, DESTINATIONS.keys(), n = 1, cutoff = 0.6)
 
@@ -68,7 +73,22 @@ def main():
             elif status == "fuzzy":
                 print(f"No exact match for {raw}. Did you mean {target.title()} ?")
                 continue
-            
+
+            elif status == "partial_many":
+                print("Multiple matches found. Please choose: ")
+                for i, k in enumerate (target, start=1):
+                    print(f"{i}) {k.title()}")
+                choice = input("Please enter a number or press Enter to cancel: ").strip()
+                
+                if choice.isdigit():
+                    idx = int(choice) - 1
+
+                    if 0 <= idx < len(target):
+                        show_country(target[idx])
+                        continue
+                print("Cancelled. Type more letter to narrow your search!")
+                continue
+
             else:
                 print(f"No match for {raw}. Type list to see the supported countries")
                 
