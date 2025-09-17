@@ -79,7 +79,7 @@ def main():
                 for i, k in enumerate (target, start=1):
                     print(f"{i}) {k.title()}")
                 choice = input("Please enter a number or press Enter to cancel: ").strip()
-                
+
                 if choice.isdigit():
                     idx = int(choice) - 1
 
@@ -92,10 +92,10 @@ def main():
             else:
                 print(f"No match for {raw}. Type list to see the supported countries")
                 
-        if key in DESTINATIONS:       # if we know this country
-            show_country(key)
-        else:                         # otherwise, no match
-            print(f'No exact match for "{raw}". Try "list" to see supported countries.')
+        # if key in DESTINATIONS:       # if we know this country
+        #     show_country(key)
+        # else:                         # otherwise, no match
+        #     print(f'No exact match for "{raw}". Try "list" to see supported countries.')
 
 if __name__ == "__main__":
     main()
